@@ -1,0 +1,43 @@
+---
+title: About
+author: Nick
+date: ''
+slug: about
+---
+
+Hi there!
+
+Nick here. I spent about 5 years studying all things Biology & Biotechnology and just because you can never run out of things to learn, on one day of the year 2016 I had the brilliant idea to take an online course on R programming. 
+
+Next thing I know I was boarding the data science [hype train](https://medium.com/p/the-future-of-data-science-14653afb52f5) with no intention of getting off.
+
+I wasn't new to computer science or coding, yet my previous encounters with programming languages such as C or Python had been brief and unsuccessful. I was truly surprised by how quickly I was able to not just learn the basics of R, but 
+
+become comfortable writing R code to   
+
+but mostly to **understand** how R works. 
+
+
+I give it to its more "scripting-language" nature or its    
+
+
+
+
+
+it took me to get hooked up 
+
+R things aside, I enjoy 
+
+
+
+At the time I am writing this, about three years have passed since I created my first **data.frame** and as much as I wish there were some well-thought reasons behind why I decided to make this website, the honest answer it that it just **felt right**. 
+
+
+I write this, about three years have passed by and I just figured it was time to put myself 
+
+later, building my own website/portfolio (using R of course!)
+
+
+Since one can not live only of data science, I do occasionally enjoy other things such as making videos, listening to music and laughing at my phone while watching dog-related memes. Also, as the URL of this blog *may* suggest, I have a thing for websites that use TLDs in smart and funny way `r emo::ji("stuck_out_tongue_winking_eye")`.
+
+

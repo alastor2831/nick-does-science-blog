@@ -1,0 +1,195 @@
+---
+title: My first Shiny App
+author: Nick
+date: '2018-10-18'
+slug: my-first-shiny-app
+image: "img/blog-post/shiny-post-cover1.jpg"
+categories: ["Blog Posts, Shiny"]
+tags: ["r", "shiny", "all time ago", "css", "html"]
+description : "And my first blog post too"
+summary : " "
+---
+
+## Shiny Apps are cool
+
+It was back in mid-2016 when I made my entrance in the data science world and of all the R things I was discovering day by day, Shiny Apps had the most wow-effect on my still fresh and impressionable data-scientist mind. Sure, writing code in the R console in the dark while sitting on your desk wearing your ~~only~~ favorite black hoodie and listening to some 90's rock classics *IS* cool. 
+
+![No one argues that.](https://media.giphy.com/media/RiNTLcARfLRXa/giphy.gif)
+
+But. There was something just as cool in seeing how all these raw lifeless lines of R code could yield interactive and stylish web pages (or apps) that anyone could use from the browser.
+My first reaction was something along the lines of "omg this is so cool let's just make one", but the enthusiasm was promptly followed by a struggle in coming up with an idea that would relay on R and could be "executed" with Shiny.
+
+I then remembered of this ''''idea'''' (yes quadruple quotes that's right) I had early in the year (2018) after I got to see yet another show by ~~the best band ever~~ All Time Low. Initially I was planning on maybe using my not-that-bad-kinda-above-average HTML skills and learning some JavaScript on the go, but then I put the two things together and realized that this was the perfect opportunity to put Shiny to use.
+
+## All Time Ago: my ~~cringy~~ first Shiny App
+
+Alright, no point running around here. My first Shiny App does one thing and one thing only: it tells you how long it has been since your last All Time Low concert. In other words, you input a date and it tells you how many days ago that was. 
+
+That's it. So... what does this have to do with data science? Absolutely nothing.
+
+But I did it anyway.
+
+![no caption needed here really](https://media.giphy.com/media/u4DnvVypp0q8U/giphy.gif)
+
+## Front end: how to make a Shiny App look pretty
+
+Let's be honest here: Shiny Apps out of the box tend to look kinda flat and colorless, with sans-serif Helvetica titles layed out on a bland white background and not much more.    
+
+But that's understandable, as they are built more for their functionalities rather than their look. Since my app doesn't really shine (pun intended) on the functionality side, I wanted it to at least be something I would enjoy looking at.  
+
+Shiny front-end (or UI) is largely (if not entirely) based upon [Bootstrap](https://getbootstrap.com), a very popular framework for building responsive website layouts without needing to loose your mind learning CSS yourself. That does come in very handy except when you start applying your own styles on top of Bootstrap default classes, at which point using CSS is your only [option](https://bootstrapbay.com/blog/customize-bootstrap/). And as Shiny Apps are no exeption, they can also be [styled](https://shiny.rstudio.com/articles/css.html) by simply creating and loading an external style sheet.
+
+Suffice to say, for this project I ended up writing way (way!) more CSS (and HTML) than R code, but I'll spare you the rundown of every single CSS selector I used and just go over some of the main elements that I added and why. For the CSS enthusiast, the style sheet can be ******** 
+
+For the calendar/date picker I did try/consider a few options: the default widget from the `dateInput()` function comes with very few options to change its appearance, and was difficult to override the build-in Bootstrap classes with my external CSS sheet. The result was sub-optimal as I also couldn't find a way to get rid of the pop-up behaviour  
+
+I then looked into some pre-built HTML classes and gave the [Metro 4](https://metroui.org.ua/datepicker.html) datepicker a go: this looked very cool on mobile but felt a bit hard to use from a desktop client so ended up being a nay as well. 
+
+#### shinyWidget to the rescue
+
+Luckily, after a fair amount of time spent doing what I do best[^2], I stumbled upon the `shinyWidget` package and my day immediately improved 10x. 
+
+[`shinyWidget`](https://github.com/dreamRs/shinyWidgets) offers plenty of stylish and highly customizable input elements to be added to your shiny app directly from R without having to write CSSs at all.
+
+I ended up using the `airdatePicker()` widget to add an in-line (yes that's right no more annoying reactive-unfriendly pop-up calendars) date picker that I styled in my `app.css` external sheet. 
+
+```{r eval=FALSE}
+airDatepickerInput(inputId = "date",
+                   label = NULL,
+                   dateFormat = "dd-mm-yyyy",
+                   view = "years",
+                   inline = TRUE,
+                   value = "2018-12-22"
+                   )
+```
+
+For the GO! button `shinyWidget` provides its own `actionBttn()` function which is based upon the pure-CSS [awesome buttons](https://bttn.surge.sh/) by [`@ganapativs`](https://twitter.com/ganapativs).
+
+```{r eval=FALSE}
+actionBttn(inputId = "button1",
+           label = "Go!",
+           style = "material-flat",
+           color = "danger",
+           size = "lg",
+           block = TRUE
+           ), 
+```
+
+
+## Back-end: not much going on here actually
+
+The back-end of a Shiny App is the (R) code that runs in the background when the user interacts with its input elements. 
+
+My app is not very data-sciency, no questions about that. It could have been much more efficienlty written with some other web-oriented languagage without the need to bring R into it. But, in the spirit of "use what you know" I happened to know one language and one language only so... R it is  ¯\_(ツ)_/¯ .
+
+As mentioned before, this app doens't relay on R do to some heavy-weight computational-intensive data-science work. In fact, this app doesn't *need* to use R at all and essentially was made more as an excercise/learning experience than anthing else. 
+
+Nontheless, some R code was acutally written for the server side of the app and what it does is querying the [setlist.fm](www.setlist.fm) API with a GET request and returning a brunch of info about a single All Time Low concert (if there was one) from the user selected date .
+
+The `httr` package makes it very easy to work with API data and bring them into R; the setlist.fm API offers quite a lot of [endpoints](https://api.setlist.fm/docs/1.0/index.html#resources) to chose from. Since I was only interested in getting data from a single concert the `search/setlists?` endpoint was perfect for the task. 
+
+After pasting the input date into the endpoint url, the `GET` function performs the API call and only if successfull (status code `200`) it parse the raw `json` data into a list.
+
+```{r eval=FALSE}
+setlist_url <- paste(setlist_root, "/rest/1.0/search/setlists?",
+           "artistName=All%20Time%20Low&",
+           "date=", format(input$date, '%d-%m-%Y'), "&p=1", sep = "")
+
+setlist_response <- GET(setlist_url, add_headers(`x-api-key` = setlist_key,
+                                                 Accept = "application/json")
+                        )
+     
+if (setlist_response[2] == "200") {
+  gig_raw <- content(setlist_response, as = "text", encoding = "UTF-8")
+  gig <- fromJSON(gig_raw, flatten = TRUE)
+```
+
+From the `gig` list only the needed values are extracted and stored in the `gig_df` data frame using a base R approach, just to avoid overloading the app with more libraries (i.e. `tidyverse`) than it needs, which may result in slower loading times (not too sure about this tho).     
+
+```{r eval=FALSE}
+  gig_df <- c(date = gig$setlist$eventDate[1],
+              venue = gig$setlist$venue.name[1],
+              city = gig$setlist$venue.city.name[1],
+              state = gig$setlist$venue.city.state[1],
+              url = gig$setlist$url[1])
+       
+  num_days <- Sys.Date() - input$date
+```
+
+The code above was then placed inside an `eventReactive()` function and linked to the action button below the calendar. What this does is delaying the execution of the code until the GO button is clicked. This also means that there is no reaction associated with the calendar itself, and nothing happens server-side as the user selectes a date. 
+
+
+```{r eval=FALSE}
+num_days_html <- eventReactive(input$button1, {
+  
+
+      # API request code shown above
+      # . . . 
+  
+  
+      # JSON response wrangling code shown above
+      # . . . 
+  
+  gig_text <- HTML(paste("<p class='days'>It has been <span style='color:#ff5964'>",
+                         num_days,
+                         "</span> days since you last saw All Time Low at",
+                         gig_df[['venue']], "in ", gig_df[["city"]], ", ",
+                         gig_df[["state"]], "</p>",
+                         "<p class='setlist'>Feeling nostalgic? Check out the full
+                         <a href='", gig_df[['url']],
+                         "'><img class='setlist-logo' src='setlist-logo.png'
+                         alt='setlist'></a>")
+                      )
+  tweet_text <- HTML(paste0('<p class="tweet">Also, tell your friends with a <a class=
+                            "twitter-share-button" href=https://twitter.com/intent/
+                            tweet" data-size="large" data-text="It has been ',
+                            num_days,
+                            ' since I last saw @AllTimeLow at ',
+                            gig_df[['venue']],
+                            " in ", gig_df[["city"]], ", ",
+                            gig_df[["state"]], '" url="" data-hashtags="AllTimeAgo"
+                            data-show-count="false">Tweet</a><script async
+                            src="https://platform.twitter.com/widgets.js"
+                            charset="utf-8"></script></p>')
+                     )
+  return(list(gig_text, tweet_text))
+  }
+     
+  else h3("Mayday situation! We have no record of an All Time Low show on this day! Try again maybe? (if you don't know a correct date, just use the default one")
+     
+    
+})
+   
+   output$value <-  renderUI({
+     num_days_html()
+   }) 
+
+```
+
+In order to have both the HTML blocks (`gig_text` and `tweet_text`) displayed together 
+
+
+Since the output for this app is simply some new text and a tweet button to show at the bottom of the page, the renderUI/UIoutput functions worked out just fine.
+
+
+## What I learned from this
+
+As mentioned already, with this project I was more aiming at teaching myself new things and start to build a portfolio (of some sort) tather than contribuiting 
+
+And it was a success in these terms: I have learned a lot about Shiny Apps reactivity and custom layouts,  
+
+## A Should-But-Probably-Won't-Do-List 
+
+I highly doubt I will ever come back to work on this project, but it doesn't hurt to list a few things that could be improved or added to make the 
+
+* Although I was overall pretty satisfied of how the app turned out, one thing I don't like it that when selecting an "empty" date the 
+* 
+
+
+
+
+
+
+[^1]: I actually never took the first introductorty course on Data Reproducibility and gitHub but went straight to the R Programming. A bit ironic considering im writing this post in R Markdown and the source code for the Shiny App.
+
+[^2]: That would be Googling! what were you thinking `r emo::ji("stuck_out_tongue_winking_eye")`.
