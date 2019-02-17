@@ -61,15 +61,16 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 # this will also be in author bio if there is no writer.
   [params.social]
-  #facebook      = "full Social profile url in facebook"
+  #facebook      = "https://www.last.fm/user/nico_sasshi/"
   #googleplus    = "full profile url in googleplus"
   email         = "niccto10@gmail.com"
   twitter       = "https://www.twitter.com/nickeatingpizza"
+  lastfm        = "https://www.last.fm/user/nico_sasshi/"
   #linkedin      = "full profile url in linkedin"
   #stackoverflow = "full profile url in stackoverflow"
   instagram     = "https://www.instagram.com/_nickinpics/"
   github        = "https://github.com/nickeatingpizza"
-  #pinterest     = "full profile url in pinterest"
+
   rss           = true
 
 # Add a writer, then use it in the markdown front matter like this: writer = "Lukas Herman"

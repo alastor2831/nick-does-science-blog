@@ -19,7 +19,7 @@ It was back in mid-2016 when I made my entrance in the data science world and of
 But. There was something just as cool in seeing how all these raw lifeless lines of R code could yield interactive and stylish web pages (or apps) that anyone could use from the browser.
 My first reaction was something along the lines of "omg this is so cool let's just make one", but the enthusiasm was promptly followed by a struggle in coming up with an idea that would relay on R and could be "executed" with Shiny.
 
-I then remembered of this ''''idea'''' (yes quadruple quotes that's right) I had early in the year (2018) after I got to see yet another show by ~~the best band ever~~ All Time Low. Initially I was planning on maybe using my not-that-bad-kinda-above-average HTML skills and learning some JavaScript on the go, but then I put the two things together and realized that this was the perfect opportunity to put Shiny to use.
+I then remembered of this """"idea"""" (yes quadruple quotes that's right) I had early in the year (2018) after I got to see yet another show by ~~the best band ever~~ All Time Low. Initially I was planning on maybe using my not-that-bad-kinda-above-average HTML skills and learning some JavaScript on the go, but then I put the two things together and realized that this was the perfect opportunity to put Shiny to use.
 
 ## All Time Ago: my ~~cringy~~ first Shiny App
 
@@ -37,11 +37,11 @@ Let's be honest here: Shiny Apps out of the box tend to look kinda flat and colo
 
 But that's understandable, as they are built more for their functionalities rather than their look. Since my app doesn't really shine (pun intended) on the functionality side, I wanted it to at least be something I would enjoy looking at.  
 
-Shiny front-end (or UI) is largely (if not entirely) based upon [Bootstrap](https://getbootstrap.com), a very popular framework for building responsive website layouts without needing to loose your mind learning CSS yourself. That does come in very handy except when you start applying your own styles on top of Bootstrap default classes, at which point using CSS is your only [option](https://bootstrapbay.com/blog/customize-bootstrap/). And as Shiny Apps are no exeption, they can also be [styled](https://shiny.rstudio.com/articles/css.html) by simply creating and loading an external style sheet.
+Shiny front-end (or UI) is largely (if not entirely) based upon [Bootstrap](https://getbootstrap.com), a very popular framework for building responsive website layouts without needing to loose your mind learning CSS yourself. That does come in very handy except when you start applying your own styles on top of Bootstrap default classes, at which point using CSS is your only [option](https://bootstrapbay.com/blog/customize-bootstrap/). And as Shiny Apps are no exception, they can also be [styled](https://shiny.rstudio.com/articles/css.html) by simply creating and loading an external style sheet.
 
-Suffice to say, for this project I ended up writing way (way!) more CSS (and HTML) than R code, but I'll spare you the rundown of every single CSS selector I used and just go over some of the main elements that I added and why. For the CSS enthusiast, the style sheet can be ******** 
+Suffice to say, for this project I ended up writing way (way!) more CSS (and HTML) than R code, but I'll spare you the rundown of every single CSS selector I used and just go over some of the main elements that I added and why. For the CSS enthusiast, the style sheet is available on my [GitHub](https://github.com/nickeatingpizza/alltimeago/blob/master/www/app.css)[^1]. 
 
-For the calendar/date picker I did try/consider a few options: the default widget from the `dateInput()` function comes with very few options to change its appearance, and was difficult to override the build-in Bootstrap classes with my external CSS sheet. The result was sub-optimal as I also couldn't find a way to get rid of the pop-up behaviour  
+For the calendar/date picker I did try/consider a few options: the default widget from the `dateInput()` function comes with very few options to change its appearance, and was difficult to override the build-in Bootstrap classes with my external CSS sheet. The result was sub-optimal as I also couldn't find a way to get rid of the pop-up behavior  
 
 I then looked into some pre-built HTML classes and gave the [Metro 4](https://metroui.org.ua/datepicker.html) datepicker a go: this looked very cool on mobile but felt a bit hard to use from a desktop client so ended up being a nay as well. 
 
@@ -82,13 +82,13 @@ The back-end of a Shiny App is the (R) code that runs in the background when the
 
 My app is not very data-sciency, no questions about that. It could have been much more efficienlty written with some other web-oriented languagage without the need to bring R into it. But, in the spirit of "use what you know" I happened to know one language and one language only so... R it is  ¯\_(ツ)_/¯ .
 
-As mentioned before, this app doens't relay on R do to some heavy-weight computational-intensive data-science work. In fact, this app doesn't *need* to use R at all and essentially was made more as an excercise/learning experience than anthing else. 
+As mentioned before, this app doesn't relay on R do to some heavy-weight computational-intensive data-science work. In fact, this app doesn't *need* to use R at all and essentially was made more as an exercise/learning experience than anything else. 
 
-Nontheless, some R code was acutally written for the server side of the app and what it does is querying the [setlist.fm](www.setlist.fm) API with a GET request and returning a brunch of info about a single All Time Low concert (if there was one) from the user selected date .
+Nonetheless, some R code was actually written for the server side of the app and what it does is querying the [setlist.fm](www.setlist.fm) API with a GET request and returning a brunch of info about a single All Time Low concert (if there was one) from the user selected date .
 
 The `httr` package makes it very easy to work with API data and bring them into R; the setlist.fm API offers quite a lot of [endpoints](https://api.setlist.fm/docs/1.0/index.html#resources) to chose from. Since I was only interested in getting data from a single concert the `search/setlists?` endpoint was perfect for the task. 
 
-After pasting the input date into the endpoint url, the `GET` function performs the API call and only if successfull (status code `200`) it parse the raw `json` data into a list.
+After pasting the input date into the endpoint url, the `GET` function performs the API call and only if successful (status code `200`) it parse the raw `json` data into a list.
 
 ```{r eval=FALSE}
 setlist_url <- paste(setlist_root, "/rest/1.0/search/setlists?",
@@ -116,7 +116,7 @@ From the `gig` list only the needed values are extracted and stored in the `gig_
   num_days <- Sys.Date() - input$date
 ```
 
-The code above was then placed inside an `eventReactive()` function and linked to the action button below the calendar. What this does is delaying the execution of the code until the GO button is clicked. This also means that there is no reaction associated with the calendar itself, and nothing happens server-side as the user selectes a date. 
+The code above was then placed inside an `eventReactive()` function and linked to the action button below the calendar. What this does is delaying the execution of the code until the GO button is clicked. This also means that there is no reaction associated with the calendar itself, and nothing happens server-side as the user selects a date. 
 
 
 ```{r eval=FALSE}
@@ -166,30 +166,31 @@ num_days_html <- eventReactive(input$button1, {
 
 ```
 
-In order to have both the HTML blocks (`gig_text` and `tweet_text`) displayed together 
-
+In order to have both the HTML blocks (`gig_text` and `tweet_text`) displayed together my first thought was to add a return function and pass both objects as a list. It actually worked and I was very surprised than pleased but hey,     
 
 Since the output for this app is simply some new text and a tweet button to show at the bottom of the page, the renderUI/UIoutput functions worked out just fine.
 
 
 ## What I learned from this
 
-As mentioned already, with this project I was more aiming at teaching myself new things and start to build a portfolio (of some sort) tather than contribuiting 
+As mentioned already, with this project I was more aiming at teaching myself new things and start to build a portfolio (of some sort) rather than making a groundbreaking entrance in the data science world.  
 
-And it was a success in these terms: I have learned a lot about Shiny Apps reactivity and custom layouts,  
+That said,it was indeed a success in these terms: I have learned a lot about Shiny Apps reactivity and custom layouts, played around ~~way to much~~ with CSSs selector, Google fonts and background photos and in the end I was pretty satisfied on how the app turned out.
 
 ## A Should-But-Probably-Won't-Do-List 
 
-I highly doubt I will ever come back to work on this project, but it doesn't hurt to list a few things that could be improved or added to make the 
+I highly doubt I will ever come back to work on this project, but it doesn't hurt to list a few things that I wish I had done to make the app better. 
 
-* Although I was overall pretty satisfied of how the app turned out, one thing I don't like it that when selecting an "empty" date the 
-* 
+* One thing I still don't like is that the output doesn't actually change when the user keeps selecting an "empty" date, so it gives the feeling that nothing is really happening. Some kind of refresh button would have solved the problem but I wasn't too sure on how to implement it.
+
+* The API used here actually also returns all the songs that were played on the selected date, so I did consider to display the full setlist within the app. In the end I settled for a link to the corresponding page on setlist.fm 
+
+## Links
+
+* The App is now live and can be accessed on [nicks.shinyapps.io/alltimeago](https://nicks.shinyapps.io/alltimeago/) 
+* GitHub repository for this project is https://github.com/nickeatingpizza/alltimeago
 
 
+[^1]: Fun fact: the [background photo](http://www.recovery-magazine.com/2017/04/13/report-time-low-live-alcatraz-milano-10042017/) I used (by photographer Luna Perri) is from the All Time Low show in Milan, in April 2017 and I was actually there (although that wasn't my last ALT concert) 
 
-
-
-
-[^1]: I actually never took the first introductorty course on Data Reproducibility and gitHub but went straight to the R Programming. A bit ironic considering im writing this post in R Markdown and the source code for the Shiny App.
-
-[^2]: That would be Googling! what were you thinking `r emo::ji("stuck_out_tongue_winking_eye")`.
+[^2]: That would be Googling--- what were you thinking `r emo::ji("stuck_out_tongue_winking_eye")`.
